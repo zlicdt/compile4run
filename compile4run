@@ -1,0 +1,28 @@
+#!/bin/zsh
+# This is a script for simply C program compile and run.
+
+if [ "$#" -ne 1 ]; then
+    echo -e "\033[0;33mUsage: \033[1;32mcompile4run \033[1;36mC source code path\033[0m"
+    exit 1
+fi
+sources="$1"
+modified=$(echo $sources | sed 's/\.c/.out/g')
+echo ""
+echo -e "\033[1;36mCompiling...\033[0m"
+echo -e "\033[1;32mRunning...\033[0m"
+echo ""
+clang $sources -o $modified
+if [ $? -ne 0 ]; then
+    echo -e "\033[1;31m[Failed] Compile failed.\033[0m"
+    exit 1
+fi
+echo "\033[1;36m--------\033[0m"
+./$modified
+echo ""
+echo "\033[1;36m--------\033[0m"
+if [ $? -ne 0 ]; then
+    echo -e "\033[1;31m[Failed] Return $?\033[0m"
+    exit 1
+fi
+echo -e "\033[1;32m[OK] Return\033[1;36m $?\033[0m"
+rm -f $modified
