@@ -7,15 +7,21 @@ if [ "$#" -ne 1 ]; then
 fi
 sources="$1"
 modified=$(echo $sources | sed 's/\.c/.out/g')
+
+clean() {
+    rm -rf $modified $modified.dSYM
+}
+trap clean EXIT
+trap clean SIGINT
 echo ""
 echo -e "\033[1;36mCompiling...\033[0m"
-echo -e "\033[1;32mRunning...\033[0m"
 echo ""
-clang $sources -o $modified
+clang++ -Wall -g $sources -o $modified
 if [ $? -ne 0 ]; then
     echo -e "\033[1;31m[Failed] Compile failed.\033[0m"
     exit 1
 fi
+echo -e "\033[1;32mRunning...\033[0m"
 echo "\033[1;36m--------\033[0m"
 ./$modified
 echo ""
@@ -24,5 +30,3 @@ if [ $? -ne 0 ]; then
     echo -e "\033[1;31m[Failed] Return $?\033[0m"
     exit 1
 fi
-echo -e "\033[1;32m[OK] Return\033[1;36m $?\033[0m"
-rm -f $modified
